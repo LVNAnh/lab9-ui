@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import api from "../../utils/api";
-import { isAuthenticated } from "../../utils/auth";
+import { isAuthenticated, getCurrentUser } from "../../utils/auth";
 import { formatPrice } from "@/utils/formatters";
 
 export default function OrdersPage() {
@@ -14,13 +14,20 @@ export default function OrdersPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !isAuthenticated()) {
-      router.push("/login");
-      return;
-    }
+    // Add a small delay to ensure localStorage is available
+    const checkAuth = setTimeout(() => {
+      const authenticated = isAuthenticated();
+      console.log("Is authenticated:", authenticated);
+      if (!authenticated) {
+        router.push("/login");
+        return;
+      } else {
+        fetchOrders();
+      }
+    }, 100);
 
-    fetchOrders();
-  }, []);
+    return () => clearTimeout(checkAuth);
+  }, [router]);
 
   const fetchOrders = async () => {
     try {
