@@ -1,4 +1,3 @@
-// src/app/products/[id]/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,6 +6,7 @@ import api from "../../../utils/api";
 import { getCurrentUser } from "../../../utils/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { formatPrice } from "@/utils/formatters";
 
 export default function ProductDetailsPage() {
   const [product, setProduct] = useState(null);
@@ -22,7 +22,6 @@ export default function ProductDetailsPage() {
       fetchProduct();
     }
 
-    // Get cart from localStorage
     const existingCart = localStorage.getItem("cart");
     if (existingCart) {
       setCartItems(JSON.parse(existingCart));
@@ -116,7 +115,7 @@ export default function ProductDetailsPage() {
               {product.name}
             </h1>
             <p className="mt-4 text-xl font-bold text-gray-900">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </p>
             <div className="mt-4">
               <p className="text-gray-600">{product.description}</p>

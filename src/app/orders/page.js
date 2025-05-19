@@ -1,4 +1,3 @@
-// src/app/orders/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -6,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import api from "../../utils/api";
 import { isAuthenticated } from "../../utils/auth";
+import { formatPrice } from "@/utils/formatters";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -14,7 +14,6 @@ export default function OrdersPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
     if (typeof window !== "undefined" && !isAuthenticated()) {
       router.push("/login");
       return;
@@ -95,7 +94,7 @@ export default function OrdersPage() {
                     </p>
                   </div>
                   <div className="text-xl font-bold">
-                    ${order.totalPrice.toFixed(2)}
+                    {formatPrice(order.totalPrice)}
                   </div>
                 </div>
                 <div>

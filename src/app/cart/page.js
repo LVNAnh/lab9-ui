@@ -1,4 +1,3 @@
-// src/app/cart/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,6 +6,7 @@ import { getCurrentUser } from "../../utils/auth";
 import api from "../../utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { formatPrice } from "@/utils/formatters";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -67,7 +67,6 @@ export default function CartPage() {
 
       const response = await api.post("/orders", orderData);
 
-      // Clear cart after successful order
       localStorage.removeItem("cart");
       setCartItems([]);
 
@@ -133,7 +132,7 @@ export default function CartPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      ${item.price.toFixed(2)}
+                      {formatPrice(item.price)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -163,7 +162,7 @@ export default function CartPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatPrice(item.price * item.quantity)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -182,7 +181,7 @@ export default function CartPage() {
           <div className="px-6 py-4 bg-gray-50">
             <div className="flex justify-between items-center">
               <div className="text-lg font-semibold">
-                Total: ${calculateTotal().toFixed(2)}
+                Total: {formatPrice(calculateTotal())}
               </div>
               <div className="flex space-x-4">
                 <button

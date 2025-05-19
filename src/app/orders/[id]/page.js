@@ -1,10 +1,10 @@
-// src/app/orders/[id]/page.js
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import api from "../../../utils/api";
 import { isAuthenticated } from "../../../utils/auth";
+import { formatPrice } from "@/utils/formatters";
 
 export default function OrderDetailPage() {
   const [order, setOrder] = useState(null);
@@ -15,7 +15,6 @@ export default function OrderDetailPage() {
   const id = params.id;
 
   useEffect(() => {
-    // Check authentication
     if (typeof window !== "undefined" && !isAuthenticated()) {
       router.push("/login");
       return;
@@ -104,7 +103,7 @@ export default function OrderDetailPage() {
             </div>
             <div>
               <p className="text-gray-600">Total Amount:</p>
-              <p className="font-medium">${order.totalPrice.toFixed(2)}</p>
+              <p className="font-medium">{formatPrice(order.totalPrice)}</p>
             </div>
           </div>
         </div>
@@ -141,7 +140,7 @@ export default function OrderDetailPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      ${item.price.toFixed(2)}
+                      {formatPrice(item.price)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -149,7 +148,7 @@ export default function OrderDetailPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatPrice(item.price * item.quantity)}
                     </div>
                   </td>
                 </tr>

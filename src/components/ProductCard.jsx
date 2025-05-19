@@ -1,9 +1,10 @@
-// src/components/ProductCard.jsx
 "use client";
 
 import Link from "next/link";
+import { formatPrice } from "@/utils/formatters";
 
 export default function ProductCard({ product }) {
+
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <div className="p-4">
@@ -20,7 +21,7 @@ export default function ProductCard({ product }) {
           {product.description || "No description available"}
         </p>
         <div className="flex justify-between items-center">
-          <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+          <span className="font-bold text-lg">{formatPrice(product.price)}</span>
           <Link href={`/products/${product.id}`}>
             <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
               View Details
