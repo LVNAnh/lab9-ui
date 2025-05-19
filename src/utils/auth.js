@@ -1,4 +1,6 @@
-import { useRouter } from "next/router";
+// src/utils/auth.js (updated for App Router)
+"use client";
+
 import api from "./api";
 import jwtDecode from "jwt-decode";
 
@@ -51,37 +53,24 @@ export const logout = () => {
 };
 
 export const getCurrentUser = () => {
-  const userStr = localStorage.getItem("user");
-  if (userStr) return JSON.parse(userStr);
+  if (typeof window !== "undefined") {
+    const userStr = localStorage.getItem("user");
+    if (userStr) return JSON.parse(userStr);
+  }
   return null;
 };
 
 export const isAuthenticated = () => {
-  const token = localStorage.getItem("token");
-  if (!token) return false;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
 
-  try {
-    const decoded = jwtDecode(token);
-    return decoded.exp > Date.now() / 1000;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const withAuth = (Component) => {
-  const AuthenticatedComponent = (props) => {
-    const router = useRouter();
-
-    if (typeof window !== "undefined") {
-      if (!isAuthenticated()) {
-        router.replace("/login");
-        return null;
-      }
-      return <Component {...props} />;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.exp > Date.now() / 1000;
+    } catch (error) {
+      return false;
     }
-
-    return null;
-  };
-
-  return AuthenticatedComponent;
+  }
+  return false;
 };

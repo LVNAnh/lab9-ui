@@ -1,3 +1,6 @@
+// src/components/ProductCard.jsx
+"use client";
+
 import Link from "next/link";
 
 export default function ProductCard({ product }) {

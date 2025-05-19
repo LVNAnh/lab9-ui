@@ -1,18 +1,21 @@
+// src/app/products/[id]/page.js
+"use client";
+
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Layout from "../../components/Layout";
-import api from "../../utils/api";
-import { getCurrentUser } from "../../utils/auth";
+import { useRouter, useParams } from "next/navigation";
+import api from "../../../utils/api";
+import { getCurrentUser } from "../../../utils/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function ProductDetails() {
+export default function ProductDetailsPage() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [cartItems, setCartItems] = useState([]);
   const router = useRouter();
-  const { id } = router.query;
+  const params = useParams();
+  const id = params.id;
 
   useEffect(() => {
     if (id) {
@@ -73,26 +76,22 @@ export default function ProductDetails() {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-xl">Loading...</div>
-        </div>
-      </Layout>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl">Loading...</div>
+      </div>
     );
   }
 
   if (!product) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-xl">Product not found</div>
-        </div>
-      </Layout>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl">Product not found</div>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="md:flex">
@@ -154,6 +153,6 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

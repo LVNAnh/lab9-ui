@@ -1,12 +1,14 @@
+// src/app/cart/page.js
+"use client";
+
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Layout from "../components/Layout";
-import { getCurrentUser } from "../utils/auth";
-import api from "../utils/api";
+import { useRouter } from "next/navigation";
+import { getCurrentUser } from "../../utils/auth";
+import api from "../../utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Cart() {
+export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -83,7 +85,7 @@ export default function Cart() {
   };
 
   return (
-    <Layout>
+    <>
       <ToastContainer />
       <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
 
@@ -201,6 +203,6 @@ export default function Cart() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 }

@@ -1,17 +1,26 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Layout from "../../components/Layout";
-import api from "../../utils/api";
-import { withAuth } from "../../utils/auth";
+// src/app/orders/[id]/page.js
+"use client";
 
-function OrderDetails() {
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import api from "../../../utils/api";
+import { isAuthenticated } from "../../../utils/auth";
+
+export default function OrderDetailPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
-  const { id } = router.query;
+  const params = useParams();
+  const id = params.id;
 
   useEffect(() => {
+    // Check authentication
+    if (typeof window !== "undefined" && !isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+
     if (id) {
       fetchOrder();
     }
@@ -42,36 +51,30 @@ function OrderDetails() {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-xl">Loading order details...</div>
-        </div>
-      </Layout>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl">Loading order details...</div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      </Layout>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        {error}
+      </div>
     );
   }
 
   if (!order) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-xl">Order not found</div>
-        </div>
-      </Layout>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl">Order not found</div>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Order Details</h1>
@@ -155,8 +158,6 @@ function OrderDetails() {
           </table>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
-
-export default withAuth(OrderDetails);

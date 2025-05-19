@@ -1,4 +1,6 @@
-import { useState } from "react";
+// src/components/ProductForm.jsx
+"use client";
+
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 

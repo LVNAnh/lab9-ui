@@ -1,16 +1,25 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Layout from "../../components/Layout";
-import api from "../../utils/api";
-import { withAuth } from "../../utils/auth";
+// src/app/orders/page.js
+"use client";
 
-function OrdersList() {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import api from "../../utils/api";
+import { isAuthenticated } from "../../utils/auth";
+
+export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    // Check authentication
+    if (typeof window !== "undefined" && !isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+
     fetchOrders();
   }, []);
 
@@ -39,26 +48,22 @@ function OrdersList() {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-xl">Loading orders...</div>
-        </div>
-      </Layout>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl">Loading orders...</div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      </Layout>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        {error}
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <h1 className="text-3xl font-bold mb-6">My Orders</h1>
 
       {orders.length === 0 ? (
@@ -78,34 +83,32 @@ function OrdersList() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div
-              key={order.id}
-              className="bg-white shadow-md rounded-md p-6 hover:shadow-lg cursor-pointer"
-              onClick={() => router.push(`/orders/${order.id}`)}
-            >
-              <div className="flex justify-between items-center mb-4">
+            <Link href={`/orders/${order.id}`} key={order.id}>
+              <div className="bg-white shadow-md rounded-md p-6 hover:shadow-lg cursor-pointer">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      {order.orderNumber}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {order.createdAt ? formatDate(order.createdAt) : "N/A"}
+                    </p>
+                  </div>
+                  <div className="text-xl font-bold">
+                    ${order.totalPrice.toFixed(2)}
+                  </div>
+                </div>
                 <div>
-                  <h3 className="text-lg font-semibold">{order.orderNumber}</h3>
-                  <p className="text-sm text-gray-500">
-                    {order.createdAt ? formatDate(order.createdAt) : "N/A"}
+                  <p className="text-sm text-gray-600">
+                    {order.items.length}{" "}
+                    {order.items.length === 1 ? "item" : "items"}
                   </p>
                 </div>
-                <div className="text-xl font-bold">
-                  ${order.totalPrice.toFixed(2)}
-                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  {order.items.length}{" "}
-                  {order.items.length === 1 ? "item" : "items"}
-                </p>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
-    </Layout>
+    </>
   );
 }
-
-export default withAuth(OrdersList);
