@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../../utils/api";
-import { isAuthenticated } from "../../../utils/auth";
+import { isAuthenticated, getCurrentUser } from "../../../utils/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProductForm from "../../../components/ProductForm";
@@ -18,13 +18,20 @@ export default function AdminProductsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !isAuthenticated()) {
-      router.push("/login");
-      return;
-    }
+    const checkAuth = setTimeout(() => {
+      const authenticated = isAuthenticated();
+      console.log("Is authenticated in admin:", authenticated);
+      if (!authenticated) {
+        toast.error("Please login to access this page");
+        router.push("/login");
+        return;
+      } else {
+        fetchProducts();
+      }
+    }, 100);
 
-    fetchProducts();
-  }, []);
+    return () => clearTimeout(checkAuth);
+  }, [router]);
 
   const fetchProducts = async () => {
     try {
