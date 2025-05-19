@@ -21,6 +21,13 @@ export const login = async (email, password) => {
       return response.data;
     }
   } catch (error) {
+    console.error("Login error:", error.response || error);
+
+    if (error.response) {
+      console.error("Error status:", error.response.status);
+      console.error("Error data:", error.response.data);
+    }
+
     throw error;
   }
 };
