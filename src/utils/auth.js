@@ -2,10 +2,11 @@
 "use client";
 
 import api from "./api";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export const login = async (email, password) => {
   try {
+    console.log("Attempting login with:", { email }); // Log only email for security
     const response = await api.post("/account/login", { email, password });
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
@@ -21,11 +22,21 @@ export const login = async (email, password) => {
       return response.data;
     }
   } catch (error) {
-    console.error("Login error:", error.response || error);
+    console.error("Login error:", error);
 
     if (error.response) {
       console.error("Error status:", error.response.status);
       console.error("Error data:", error.response.data);
+
+      if (error.response.status === 401) {
+        throw new Error("Invalid email or password");
+      } else if (error.response.status === 500) {
+        throw new Error(
+          "Server error. Please try again later or contact support."
+        );
+      }
+    } else if (error.request) {
+      throw new Error("No response from server. Please check your connection.");
     }
 
     throw error;
