@@ -1,7 +1,7 @@
 "use client";
 
 import api from "./api";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 export const login = async (email, password) => {
   try {
@@ -18,6 +18,9 @@ export const login = async (email, password) => {
           lastName: response.data.lastName,
         })
       );
+
+      window.dispatchEvent(new Event("authChange"));
+
       return response.data;
     }
   } catch (error) {
@@ -56,6 +59,9 @@ export const register = async (userData) => {
           lastName: response.data.lastName,
         })
       );
+
+      window.dispatchEvent(new Event("authChange"));
+
       return response.data;
     }
   } catch (error) {
@@ -66,6 +72,9 @@ export const register = async (userData) => {
 export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+
+  window.dispatchEvent(new Event("authChange"));
+
   window.location.href = "/login";
 };
 
