@@ -2,20 +2,43 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getCurrentUser, logout } from "../utils/auth";
 
 export default function Navigation() {
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const currentUser = getCurrentUser();
     setUser(currentUser);
   }, []);
 
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const currentUser = getCurrentUser();
+      setUser(currentUser);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    
+    window.addEventListener("authChange", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("authChange", handleStorageChange);
+    };
+  }, []);
+
   const handleLogout = () => {
     logout();
+    setUser(null);
     router.push("/login");
   };
 

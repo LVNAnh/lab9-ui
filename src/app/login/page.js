@@ -1,4 +1,3 @@
-// src/app/login/page.js
 "use client";
 
 import { useState } from "react";
@@ -30,7 +29,10 @@ export default function LoginPage() {
     try {
       await login(values.email, values.password);
       toast.success("Login successful");
-      router.push("/");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 800);
     } catch (error) {
       setError(
         error.response?.data?.message ||

@@ -1,4 +1,3 @@
-// src/app/register/page.js
 "use client";
 
 import { useState } from "react";
@@ -42,7 +41,10 @@ export default function RegisterPage() {
       const { confirmPassword, ...userData } = values;
       await register(userData);
       toast.success("Registration successful");
-      router.push("/");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 800);
     } catch (error) {
       setError(
         error.response?.data?.message ||
