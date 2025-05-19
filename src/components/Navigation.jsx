@@ -1,4 +1,3 @@
-// src/components/Navigation.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -35,11 +34,18 @@ export default function Navigation() {
                 </span>
               </Link>
               {user && (
-                <Link href="/orders">
-                  <span className="px-3 py-2 rounded-md cursor-pointer hover:bg-gray-700">
-                    My Orders
-                  </span>
-                </Link>
+                <>
+                  <Link href="/orders">
+                    <span className="px-3 py-2 rounded-md cursor-pointer hover:bg-gray-700">
+                      My Orders
+                    </span>
+                  </Link>
+                  <Link href="/admin/products">
+                    <span className="px-3 py-2 rounded-md cursor-pointer hover:bg-gray-700">
+                      Manage Products
+                    </span>
+                  </Link>
+                </>
               )}
             </div>
           </div>

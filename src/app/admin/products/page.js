@@ -1,4 +1,3 @@
-// src/app/admin/products/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +7,7 @@ import { isAuthenticated } from "../../../utils/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProductForm from "../../../components/ProductForm";
+import { formatPrice } from "@/utils/formatters";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
@@ -18,7 +18,6 @@ export default function AdminProductsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
     if (typeof window !== "undefined" && !isAuthenticated()) {
       router.push("/login");
       return;
@@ -154,7 +153,7 @@ export default function AdminProductsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      ${product.price.toFixed(2)}
+                      {formatPrice(product.price)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

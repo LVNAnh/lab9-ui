@@ -1,4 +1,3 @@
-// src/components/ProductForm.jsx
 "use client";
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
