@@ -55,20 +55,48 @@ export default function AdminProductsPage() {
     setShowForm(true);
   };
 
-  const handleDelete = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await api.delete(`/products/${productId}`);
-        toast.success("Product deleted successfully");
-        fetchProducts();
-      } catch (error) {
-        console.error("Error deleting product:", error);
-        toast.error(
-          error.response?.data?.message ||
-            "Failed to delete product. Please try again."
-        );
+  const handleDelete = (productId) => {
+    const toastId = toast.info(
+      <div>
+        <p className="mb-3">Are you sure you want to delete this product?</p>
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={() => {
+              toast.dismiss(toastId);
+            }}
+            className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={async () => {
+              toast.dismiss(toastId);
+              try {
+                await api.delete(`/products/${productId}`);
+                toast.success("Product deleted successfully");
+                fetchProducts();
+              } catch (error) {
+                console.error("Error deleting product:", error);
+                toast.error(
+                  error.response?.data?.message ||
+                    "Failed to delete product. Please try again."
+                );
+              }
+            }}
+            className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
+          >
+            Delete
+          </button>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        closeButton: false,
+        position: "top-center",
       }
-    }
+    );
   };
 
   const handleFormSubmit = async (productData) => {
@@ -111,7 +139,17 @@ export default function AdminProductsPage() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-3xl font-bold">Manage Products</h1>
         <button
