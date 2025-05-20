@@ -14,7 +14,6 @@ export default function OrdersPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Add a small delay to ensure localStorage is available
     const checkAuth = setTimeout(() => {
       const authenticated = isAuthenticated();
       console.log("Is authenticated:", authenticated);
@@ -31,8 +30,17 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
+        router.push("/login");
+        return;
+      }
+
       const response = await api.get("/orders");
-      setOrders(response.data);
+      const userOrders = response.data.filter(
+        (order) => order.user && order.user.id === currentUser.id
+      );
+      setOrders(userOrders);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching orders:", error);
